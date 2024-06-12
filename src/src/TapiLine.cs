@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using JulMar.Atapi.Interop;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace JulMar.Atapi
 {
@@ -1673,9 +1674,8 @@ namespace JulMar.Atapi
             }
         }
 
-        private void HandleNewCall(TapiCall call, int callPrivileges)
+        private async Task HandleNewCall(TapiCall call, int callPrivileges)
         {
-            f
             if (NewCall != null)
             {
                 Privilege priv = (callPrivileges == NativeMethods.LINECALLPRIVILEGE_NONE) ? Privilege.None :

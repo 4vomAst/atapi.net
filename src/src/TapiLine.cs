@@ -601,7 +601,7 @@ namespace JulMar.Atapi
         /// </summary>
         public bool CanMakeCall
         {
-            get { return (_lds.dwLineFeatures & NativeMethods.LINEFEATURE_MAKECALL) > 0; }
+            get { return (   _lds.dwLineFeatures & NativeMethods.LINEFEATURE_MAKECALL) > 0; }
         }
 
         /// <summary>
@@ -772,7 +772,6 @@ namespace JulMar.Atapi
         private readonly int _negotiatedVersion;
         private int _negotiatedExtVersion;
         private readonly int _stringFormat;
-        private string _lineName = string.Empty;
         private HTLINE _hLine = new HTLINE();
         private LineCapabilities _props;
         private LineStatus _status;
@@ -1059,17 +1058,7 @@ namespace JulMar.Atapi
         /// <summary>
         /// Returns the Line Name associated with the line.  It will never be empty.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                if (_lineName.Length == 0 && _props != null)
-                    _lineName = _props.LineName;
-                if (_lineName.Length == 0)
-                    _lineName = string.Format(CultureInfo.CurrentCulture, "Line {0}", _deviceId);
-                return _lineName;
-            }
-        }
+        public string Name => _props != null ? _props.LineName : string.Format(CultureInfo.CurrentCulture, "Line {0}", _deviceId);
 
         /// <summary>
         /// Returns the <see cref="LineCapabilities"/> object for this line.

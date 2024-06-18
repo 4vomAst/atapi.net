@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using JulMar.Atapi.Interop;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace JulMar.Atapi
 {
@@ -600,7 +601,7 @@ namespace JulMar.Atapi
         /// </summary>
         public bool CanMakeCall
         {
-            get { return (_lds.dwLineFeatures & NativeMethods.LINEFEATURE_MAKECALL) > 0; }
+            get { return (   _lds.dwLineFeatures & NativeMethods.LINEFEATURE_MAKECALL) > 0; }
         }
 
         /// <summary>
@@ -771,7 +772,6 @@ namespace JulMar.Atapi
         private readonly int _negotiatedVersion;
         private int _negotiatedExtVersion;
         private readonly int _stringFormat;
-        private string _lineName = string.Empty;
         private HTLINE _hLine = new HTLINE();
         private LineCapabilities _props;
         private LineStatus _status;
@@ -1058,17 +1058,7 @@ namespace JulMar.Atapi
         /// <summary>
         /// Returns the Line Name associated with the line.  It will never be empty.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                if (_lineName.Length == 0 && _props != null)
-                    _lineName = _props.LineName;
-                if (_lineName.Length == 0)
-                    _lineName = string.Format(CultureInfo.CurrentCulture, "Line {0}", _deviceId);
-                return _lineName;
-            }
-        }
+        public string Name => _props != null ? _props.LineName : string.Format(CultureInfo.CurrentCulture, "Line {0}", _deviceId);
 
         /// <summary>
         /// Returns the <see cref="LineCapabilities"/> object for this line.
@@ -1673,9 +1663,8 @@ namespace JulMar.Atapi
             }
         }
 
-        private void HandleNewCall(TapiCall call, int callPrivileges)
+        private async Task HandleNewCall(TapiCall call, int callPrivileges)
         {
-            f
             if (NewCall != null)
             {
                 Privilege priv = (callPrivileges == NativeMethods.LINECALLPRIVILEGE_NONE) ? Privilege.None :

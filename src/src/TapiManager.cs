@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Threading;
 using JulMar.Atapi.Interop;
 using System.Globalization;
+using System.Threading.Tasks;
 
 [assembly: System.Security.AllowPartiallyTrustedCallers]
 
